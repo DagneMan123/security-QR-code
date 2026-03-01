@@ -1,0 +1,109 @@
+================================================================================
+                    SECURITY MANAGEMENT SYSTEM
+                         VISUAL GUIDE
+================================================================================
+
+                          🎯 YOUR SYSTEM
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                                                                             │
+│                         SECURITY MANAGEMENT SYSTEM                         │
+│                                                                             │
+│  ┌──────────────────────────────────────────────────────────────────────┐  │
+│  │                        FRONTEND LAYER                               │  │
+│  │                                                                      │  │
+│  │  ┌─────────────────────────┐    ┌─────────────────────────┐        │  │
+│  │  │  ADMIN DASHBOARD        │    │  SECURITY PORTAL        │        │  │
+│  │  │  (React)                │    │  (React)                │        │  │
+│  │  │  Port: 5173             │    │  Port: 5174             │        │  │
+│  │  │                         │    │                         │        │  │
+│  │  │  • Device Management    │    │  • QR Scanning          │        │  │
+│  │  │  • Student Management   │    │  • Check-In/Out         │        │  │
+│  │  │  • Officer Management   │    │  • Activity Tracking    │        │  │
+│  │  │  • Analytics            │    │  • Student Registration │        │  │
+│  │  │  • Device Blocking      │    │                         │        │  │
+│  │  └─────────────────────────┘    └─────────────────────────┘        │  │
+│  │                                                                      │  │
+│  └──────────────────────────────────────────────────────────────────────┘  │
+│                                    ↓                                        │
+│                            API Calls (HTTP)                                │
+│                                    ↓                                        │
+│  ┌──────────────────────────────────────────────────────────────────────┐  │
+│  │                      BACKEND API LAYER                              │  │
+│  │                    (Node.js + Express)                              │  │
+│  │                      Port: 5000                                     │  │
+│  │                                                                      │  │
+│  │  ┌────────────────────────────────────────────────────────────┐    │  │
+│  │  │  API Routes:                                               │    │  │
+│  │  │  • /api/devices (Device Management)                        │    │  │
+│  │  │  • /api/student (Student Management)                       │    │  │
+│  │  │  • /api/officer (Officer Management)                       │    │  │
+│  │  │  • /api/user (Authentication)                              │    │  │
+│  │  │  • /api/qr (QR Code Operations)                            │    │  │
+│  │  │  • /api/dashboard (Dashboard Data)                         │    │  │
+│  │  └────────────────────────────────────────────────────────────┘    │  │
+│  │                                                                      │  │
+│  │  ┌────────────────────────────────────────────────────────────┐    │  │
+│  │  │  Features:                                                 │    │  │
+│  │  │  • JWT Authentication                                     │    │  │
+│  │  │  • Role-Based Access Control                              │    │  │
+│  │  │  • QR Code Encryption (AES-128-CBC)                       │    │  │
+│  │  │  • Rate Limiting                                          │    │  │
+│  │  │  • Audit Logging                                          │    │  │
+│  │  │  • Error Handling                                         │    │  │
+│  │  └────────────────────────────────────────────────────────────┘    │  │
+│  │                                                                      │  │
+│  └──────────────────────────────────────────────────────────────────────┘  │
+│                                    ↓                                        │
+│                    ┌───────────────┴───────────────┐                       │
+│                    ↓                               ↓                       │
+│  ┌──────────────────────────────┐    ┌──────────────────────────────┐    │
+│  │   DATABASE LAYER             │    │   STORAGE LAYER              │    │
+│  │   (PostgreSQL)               │    │   (Cloudinary)               │    │
+│  │                              │    │                              │    │
+│  │   • Student Model            │    │   • Image Storage            │    │
+│  │   • Device Model             │    │   • Automatic Optimization   │    │
+│  │   • Officer Model            │    │   • Secure URLs              │    │
+│  │   • User Model               │    │   • Folder: students/        │    │
+│  │                              │    │                              │    │
+│  │   Connection: Supabase       │    │   Cloud Name: dm5rf4yzc      │    │
+│  │   (Already Configured)       │    │   (Already Configured)       │    │
+│  └──────────────────────────────┘    └──────────────────────────────┘    │
+│                                                                             │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+
+================================================================================
+                         🚀 QUICK START FLOW
+================================================================================
+
+                    STEP 1: OPEN 3 TERMINALS
+                              ↓
+        ┌─────────────────────┬─────────────────────┬─────────────────────┐
+        ↓                     ↓                     ↓                     ↓
+    Terminal 1           Terminal 2           Terminal 3           Terminal 4
+    Backend              Admin Dashboard      Security Portal      Monitor
+    
+    cd backend           cd admin             cd security-fronend
+    npm install          npm install          npm install
+    npm run dev          npm run dev          npm run dev
+    
+    Port: 5000           Port: 5173           Port: 5174
+    
+                              ↓
+                    STEP 2: OPEN BROWSER
+                              ↓
+        ┌─────────────────────┬─────────────────────┐
+        ↓                     ↓                     ↓
+    Admin Dashboard      Security Portal      Backend API
+    http://5173          http://5174          http://5000
+    
+    Login:               Register/Login       Test:
+    security@gmail.com   Student Account      curl http://5000/
+    security
+    
+                              ↓
+                    STEP 3: START USING
+                              ↓
+        ┌─────────────────────┬─────────────────────┐
+        ↓                  

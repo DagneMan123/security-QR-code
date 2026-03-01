@@ -1,0 +1,45 @@
+@import "tailwindcss";
+
+/* Define dark mode variant */
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* Define theme colors */
+@theme {
+  --color-gray-50: #f8fafc;
+  --color-gray-100: #f1f5f9;
+  --color-gray-200: #e2e8f0;
+  --color-gray-300: #cbd5e1;
+  --color-gray-400: #94a3b8;
+  --color-gray-500: #64748b;
+  --color-gray-600: #475569;
+  --color-gray-700: #334155;
+  --color-gray-800: #1e293b;
+  --color-gray-900: #0f172a;
+  --color-gray-950: #020617;
+  
+  /* Add cyan and blue colors for gradients */
+  --color-cyan-500: #06b6d4;
+  --color-cyan-600: #0891b2;
+  --color-blue-500: #3b82f6;
+  --color-blue-600: #2563eb;
+  --color-red-500: #ef4444;
+  --color-rose-600: #e11d48;
+}
+
+/* Base styles */
+:root {
+  --background: #ffffff;
+  --foreground: #020617;
+}
+
+.dark {
+  --background: #020617;
+  --foreground: #f8fafc;
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  margin: 0;
+  min-height: 100vh;
+}
