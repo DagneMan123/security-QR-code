@@ -16,7 +16,7 @@ import EditSecurityOfficer from "./pages/EditSecurityOfficer";
 import Login from "./pages/Login";
 import AddSecurity from "./pages/AddSecurity";
 import TodayLogin from "./pages/TodayLogin";
-import TodayLogout from "./pages/Todaylogout";
+import TodayLogout from "./pages/TodayLogout";
 import BlockedDevices from "./pages/BlockedDevices";
 import { AdminContext } from "./context/AdminContext";
 import Security from "./pages/Security";
