@@ -3,8 +3,13 @@ import Student from "./StudentModel.js";
 import Device from "./Devicemodel.js";
 import SecurityOfficer from "./OfficierModel.js";
 
+try {
+  await sequelize.sync({ alter: true });
+  console.log("✅ Database synced successfully.");
+} catch (error) {
+  console.error("❌ Database sync failed:", error.message);
+}
 
-await sequelize.sync({ alter: true })
 Device.hasOne(Student, {
   foreignKey: "deviceId",
   sourceKey: "deviceId"
