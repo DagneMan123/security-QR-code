@@ -21,13 +21,10 @@ import BlockedDevices from "./pages/BlockedDevices";
 import { AdminContext } from "./context/AdminContext";
 import Security from "./pages/Security";
 
-
-
 export const backendUrl = import.meta.env.VITE_BACKEND_URL;
 
 const App = () => {
-  const { isSidebarOpen, toggleSidebar } = useContext(AdminContext);
-  const [token, setToken] = useState(localStorage.getItem("token") || "");
+  const { isSidebarOpen, toggleSidebar, token, setToken } = useContext(AdminContext);
   const [theme, setTheme] = useState(() => {
     // Check localStorage first, then system preference
     const savedTheme = localStorage.getItem("theme");
@@ -45,11 +42,6 @@ const App = () => {
     }
     localStorage.setItem("theme", theme);
   }, [theme]);
-
-  // Store token
-  useEffect(() => {
-    localStorage.setItem("token", token);
-  }, [token]);
 
   const toggleTheme = () => {
     setTheme(prevTheme => prevTheme === "light" ? "dark" : "light");
@@ -106,6 +98,4 @@ const App = () => {
   );
 };
 
-
 export default App;
-

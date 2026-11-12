@@ -7,7 +7,7 @@ import { useNavigate } from "react-router-dom";
 export const AdminContext = createContext();
 
 export const AdminProvider = ({ children }) => {
-  // Fix: Use a single useEffect for theme
+  // Theme state
   const [theme, setTheme] = useState(() => {
     if (typeof window !== 'undefined') {
       const savedTheme = localStorage.getItem("theme");
@@ -23,40 +23,41 @@ export const AdminProvider = ({ children }) => {
   const [devices, setDevices] = useState([]);
   const [officer, setOfficer] = useState([]);
   const [student, setStudent] = useState([]);
-  const [token, setToken] = useState('');
+  const [token, setToken] = useState(() => localStorage.getItem("token") || "");
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
+  // Sync token changes to localStorage
+  useEffect(() => {
+    if (token) {
+      localStorage.setItem("token", token);
+    } else {
+      localStorage.removeItem("token");
+    }
+  }, [token]);
 
+  const toggleSidebar = () => {
+    setIsSidebarOpen(prev => !prev);
+  };
 
- const toggleSidebar = () => {
-  setIsSidebarOpen(prev => !prev);
-};
-
-useEffect(() => {
+  useEffect(() => {
     const handleResize = () => {
       if (window.innerWidth >= 1024) {
-        // On desktop, sidebar should be open
         setIsSidebarOpen(true);
       } else {
-        // On mobile, sidebar should be closed
         setIsSidebarOpen(false);
       }
     };
     
-    // Set initial state based on screen size
     handleResize();
-    
-    // Add resize listener
     window.addEventListener('resize', handleResize);
-    
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
   const closeSidebar = () => {
-  if (window.innerWidth < 1024) {
-    setIsSidebarOpen(false);
-  }
-};
+    if (window.innerWidth < 1024) {
+      setIsSidebarOpen(false);
+    }
+  };
 
   const navigate = useNavigate();
   const backendUrl = import.meta.env.VITE_BACKEND_URL;
@@ -78,7 +79,6 @@ useEffect(() => {
     setTheme(prev => prev === "light" ? "dark" : "light");
   };
 
-  // ... rest of your functions remain the same
   const getDeviceData = async() => {
     try {
       const response = await axios.get(`${backendUrl}/api/devices/list`);
@@ -124,24 +124,23 @@ useEffect(() => {
     try {
       const res = await axios.get(`${backendUrl}/api/dashboard/list`);
       if (res.data?.data) {
-      setStats(res.data.data);
-    } else {
-      // res.j
-    }
+        setStats(res.data.data);
+      }
     } catch (err) {
       console.error(err);
     }
   };
 
   const fetchOfficers = async () => {
+    const currentToken = token || localStorage.getItem("token");
+    if (!currentToken) return;
+
     try {
-      const token = localStorage.getItem("token");
       const res = await axios.get(backendUrl + "/api/officer/list", {
-        headers: { Authorization: `Bearer ${token}` }
+        headers: { Authorization: `Bearer ${currentToken}` }
       });
       setOfficer(res.data.data || []);
       console.log("Officers fetched:", res.data.data);
-      
     } catch (err) {
       console.error("Failed to fetch officers:", err);
       setOfficer([]);
@@ -149,18 +148,13 @@ useEffect(() => {
   };
 
   useEffect(() => {
-    fetchOfficers();
     getStudentData();
     fetchStats();
     getDeviceData();
-  }, [token]);
-
-  useEffect(() => {
-    const storedToken = localStorage.getItem("token");
-    if (storedToken && !token) {
-      setToken(storedToken);
+    if (token) {
+      fetchOfficers();
     }
-  }, []);
+  }, [token]);
 
   const value = {
     theme, 

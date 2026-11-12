@@ -6,7 +6,7 @@ import { AdminContext } from "../context/AdminContext";
 
 const Security = () => {
   const { officerId } = useParams();
-  const { officer, navigate, backendUrl, setOfficer, fetchOfficers } = useContext(AdminContext);
+  const { officer, navigate, backendUrl, setOfficer, fetchOfficers, token } = useContext(AdminContext);
   const [securityOfficer, setSecurityOfficer] = useState(null);
   const [isEditOpen, setIsEditOpen] = useState(false);
 
@@ -17,6 +17,11 @@ const Security = () => {
     phone: "",
     isActive: true
   });
+
+  const getAuthHeader = () => {
+    const currentToken = token || localStorage.getItem("token");
+    return currentToken ? { headers: { Authorization: `Bearer ${currentToken}` } } : {};
+  };
 
   useEffect(() => {
     const fetchData = officer.find(o => o.officerId === officerId);
@@ -43,7 +48,7 @@ const Security = () => {
 
   const toggleStatus = async (officerId, currentStatus) => {
     try {
-      await axios.patch(`${backendUrl}/api/officer/${officerId}/status`);
+      await axios.patch(`${backendUrl}/api/officer/${officerId}/status`, {}, getAuthHeader());
       
       setOfficer(prev =>
         prev.map(o =>
@@ -67,7 +72,7 @@ const Security = () => {
     }
 
     try {
-      await axios.delete(`${backendUrl}/api/officer/${officerId}`);
+      await axios.delete(`${backendUrl}/api/officer/${officerId}`, getAuthHeader());
       
       toast.success("Security officer deleted successfully");
       navigate("/manage-security");
@@ -87,7 +92,7 @@ const Security = () => {
         fullName: form.fullName,
         email: form.email,
         phone: form.phone,
-      });
+      }, getAuthHeader());
 
       setOfficer(prev =>
         prev.map(o =>

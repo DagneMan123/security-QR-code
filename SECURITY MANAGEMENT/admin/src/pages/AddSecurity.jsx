@@ -4,7 +4,7 @@ import { toast } from "react-toastify";
 import { AdminContext } from "../context/AdminContext";
 
 const AddSecurity = () => {
-  const { navigate, fetchOfficers, token, backendUrl } = useContext(AdminContext)
+  const { navigate, fetchOfficers, token, backendUrl } = useContext(AdminContext);
   const [error, setError] = useState("");
 
   const [form, setForm] = useState({
@@ -19,20 +19,26 @@ const AddSecurity = () => {
   };
 
   const handleSubmit = async (e) => {
-      e?.preventDefault();
-      
-      if (!form.officerId.trim()) return setError("Officer ID is required.")
+    e?.preventDefault();
     
+    if (!form.officerId.trim()) return setError("Officer ID is required.");
     if (!form.fullName.trim()) return setError("Full Name is required.");
-    if (!form.email.trim()) return setError("Email Address is required.")
-    
+    if (!form.email.trim()) return setError("Email Address is required.");
     if (!form.phone.trim()) return setError("Phone is required.");
+
+    const currentToken = token || localStorage.getItem("token");
+    if (!currentToken) {
+      const msg = "Authentication token not found. Please log in again.";
+      toast.error(msg);
+      setError(msg);
+      return;
+    }
 
     try {
       const response = await axios.post(
         backendUrl + "/api/officer/add", 
         form,
-        { headers: { Authorization: `Bearer ${token}` } }
+        { headers: { Authorization: `Bearer ${currentToken}` } }
       );
       
       toast.success("Security officer added successfully");
@@ -43,7 +49,7 @@ const AddSecurity = () => {
       navigate("/manage-security-officer");
 
     } catch (err) {
-        const message =
+      const message =
         err.response?.data?.message ||
         err.response?.data?.error ||
         "Failed to add security officer";
@@ -53,7 +59,7 @@ const AddSecurity = () => {
     }
   };
 
- return (
+  return (
     <div className="space-y-6">
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
@@ -130,11 +136,10 @@ const AddSecurity = () => {
                 type="tel"
                 value={form.phone}
                 onChange={(e) => {
-                      let value = e.target.value.replace(/\D/g, "");
-                      if (value.length > 10) value = value.slice(0, 10);
-                      setForm((f) => ({ ...f, phone: value }));
-                    }
-                    }
+                  let value = e.target.value.replace(/\D/g, "");
+                  if (value.length > 10) value = value.slice(0, 10);
+                  setForm((f) => ({ ...f, phone: value }));
+                }}
                 className="w-full px-4 py-3 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl focus:ring-2 focus:ring-cyan-500 focus:border-transparent transition-colors"
                 maxLength={10}
               />

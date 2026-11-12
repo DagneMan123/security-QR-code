@@ -4,43 +4,44 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import { AdminContext } from "../context/AdminContext";
 
-const Login = ({ setToken }) => {
-  const { navigate } = useContext(AdminContext);
+const Login = ({ setToken: propSetToken }) => {
+  const { navigate, setToken: contextSetToken } = useContext(AdminContext);
+  const setToken = propSetToken || contextSetToken;
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-  
 
   const onSubmitHandler = async (e) => {
     e.preventDefault();
     setLoading(true);
 
-  
-    if (!email.trim()) { setLoading(false)
-      return setError("Email Address is required.")
+    if (!email.trim()) { 
+      setLoading(false);
+      return setError("Email Address is required.");
     }
     if (!password.trim()) { 
-      setLoading(false)
-       return setError("Password is required.");
+      setLoading(false);
+      return setError("Password is required.");
     }
 
     try {
       const response = await axios.post(backendUrl + "/api/user/admin", { email, password });
       console.log(response.data);
-      
 
       if (response.data.success) {
-        setToken(response.data.token);
+        localStorage.setItem("token", response.data.token);
+        if (setToken) setToken(response.data.token);
+        if (contextSetToken) contextSetToken(response.data.token);
         toast.success("Login successful");
-        navigate("/")
+        navigate("/");
       } else {
         toast.error("Invalid Credentials");
         setEmail("");
         setPassword("");
       }
     } catch (error) {
-      toast.error(error.message || "Login failed");
+      toast.error(error.response?.data?.message || error.message || "Login failed");
     } finally {
       setLoading(false);
     }
@@ -105,27 +106,6 @@ const Login = ({ setToken }) => {
                 </div>
               </div>
 
-              {/* Remember Me & Forgot Password */}
-              {/* <div className="flex items-center justify-between">
-                <div className="flex items-center">
-                  <input
-                    id="remember-me"
-                    type="checkbox"
-                    className="h-4 w-4 bg-gray-900 border-gray-700 rounded text-cyan-600 focus:ring-cyan-500"
-                    disabled={loading}
-                  />
-                  <label htmlFor="remember-me" className="ml-2 text-sm text-gray-400">
-                    Remember me
-                  </label>
-                </div>
-                <a href="#" className="text-sm font-medium text-cyan-500 hover:text-cyan-400 transition-colors">
-                  Forgot password?
-                </a>
-              </div> */}
-
-
-            
-
               {/* Submit Button */}
               <button
                 type="submit"
@@ -145,7 +125,7 @@ const Login = ({ setToken }) => {
                 )}
               </button>
             </form>
-                          {error && (
+            {error && (
               <div className="mt-4 p-4 bg-red-50 dark:bg-red-900/30 border border-red-200 dark:border-red-800 rounded-xl">
                 <div className="flex items-center">
                   <svg className="w-5 h-5 text-red-600 dark:text-red-400 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -177,7 +157,6 @@ const Login = ({ setToken }) => {
       </div>
     </div>
   );
-};;
+};
 
-
-export default Login
+export default Login;
