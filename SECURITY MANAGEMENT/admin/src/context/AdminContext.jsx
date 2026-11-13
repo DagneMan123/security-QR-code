@@ -35,6 +35,23 @@ export const AdminProvider = ({ children }) => {
     }
   }, [token]);
 
+  // Intercept 401 responses (expired or invalid token) and automatically clear token
+  useEffect(() => {
+    const interceptor = axios.interceptors.response.use(
+      (response) => response,
+      (error) => {
+        if (error.response?.status === 401) {
+          console.warn("Session expired or unauthorized (401). Clearing session...");
+          setToken("");
+          localStorage.removeItem("token");
+          toast.error("Session expired. Please log in again.");
+        }
+        return Promise.reject(error);
+      }
+    );
+    return () => axios.interceptors.response.eject(interceptor);
+  }, []);
+
   const toggleSidebar = () => {
     setIsSidebarOpen(prev => !prev);
   };
@@ -143,6 +160,10 @@ export const AdminProvider = ({ children }) => {
       console.log("Officers fetched:", res.data.data);
     } catch (err) {
       console.error("Failed to fetch officers:", err);
+      if (err.response?.status === 401) {
+        setToken("");
+        localStorage.removeItem("token");
+      }
       setOfficer([]);
     }
   };
